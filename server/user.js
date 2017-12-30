@@ -7,10 +7,25 @@ const _filter = {'passwd':0, '__v':0};
 
 Router.get('/list', (req, res) => {
 	// User.remove({}, (err, doc) => {});
-	User.find({}, (err, doc) => {
-		return res.json(doc);
+	const { type } = req.query;
+	User.find({ type }, (err, doc) => {
+		return res.json({code:0, data:doc});
 	});
 });
+Router.post('/update', (req, res) => {
+	const userid = req.cookies.userid;
+	if (!userid) {
+		return res.json({code:1})
+	}
+	const body = req.body;
+	User.findByIdAndUpdate(userid, body, (err, doc) =>{
+		const data = Object.assign({}, {
+			username:doc.username,
+			type:doc.type
+		}, body);
+		return res.json({code:0, data});
+	})
+})
 Router.post('/login', (req, res) => {
 	const {username, passwd} = req.body;
 	User.findOne({username, passwd:md5Passwd(passwd)}, _filter, (err, doc) => {
