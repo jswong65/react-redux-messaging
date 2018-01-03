@@ -1,4 +1,3 @@
-
 const getRedirectPath = ({type, avatar }) => {
 	// return the redirect path based on user info
 	// user.type /tutor /student
@@ -10,10 +9,8 @@ const getRedirectPath = ({type, avatar }) => {
 	return url
 };
 
-const handleChange = (key, val) => {
-	this.setState(() => ({
-		[key]: val
-	}));
+const getChatId = (fromId, toId) => {
+	return [fromId, toId].sort().join('_');
 }
 
-export {getRedirectPath, handleChange};
+export { getRedirectPath, getChatId };
