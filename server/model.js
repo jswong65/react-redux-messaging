@@ -5,16 +5,21 @@ mongoose.connect(DB_URL);
 
 const models = {
 	user:{
-		'username': {type:String, require:true},
-		'passwd': {type:String, require:true},
-		'type': {type:String, require:true},
-		'avatar': {'type':String},
-		'desc': {'type':String},
-		'major': {'type':String},
-		'year': {'type':String}
+		'username': { type:String, require:true },
+		'passwd': { type:String, require:true },
+		'type': { type:String, require:true },
+		'avatar': { 'type':String },
+		'desc': { 'type':String },
+		'major': { 'type':String },
+		'year': { 'type':String }
 	},
 	chat:{
-
+		'chatId': { 'type':String, require:true },
+		'from': { type:String, require:true },
+		'to': { type:String, require:true },
+		'has_read':{ 'type':Boolean, default: false },
+		'content': { type:String, require:true, deafult:'' },
+		'create_time': { type:Number, default: Date.now } 
 	}
 };
 
@@ -23,7 +28,7 @@ for (let m in models){
 }
 
 module.exports = {
-	getModel:function(name){
+	getModel: function(name){
 		return mongoose.model(name);
 	}
 }
