@@ -6,11 +6,18 @@ import NavLinkBar from '../components/navlinkbar';
 import Tutor from './tutor';
 import Student from './student';
 import User from './user';
+import MessageList from './message';
+import { getMsgList, recvMsg } from '../actions/chat';
 
-const Message = () => {
-	return <h2>Message</h2>
-}
+
 class Dashboard extends React.Component{
+	componentDidMount(){
+		// only get message if there is non
+		if (!this.props.chat.chatMsg.length) {
+			this.props.getMsgList();
+			this.props.recvMsg();
+		}
+	}
 	render(){
 		const { pathname } = this.props.location; 
 		const user = this.props.user;
@@ -36,7 +43,7 @@ class Dashboard extends React.Component{
 				text:'message',
 				icon:'msg',
 				title:'Message List',
-				component:Message,
+				component:MessageList,
 			},
 			{
 				path:'/profile',
@@ -53,14 +60,17 @@ class Dashboard extends React.Component{
 				</NavBar>
 				<div style={{marginTop:45}}>
 					{navList.map(elem => (
-						<Route key={elem.path} path={elem.path} component={elem.component} />
+						<Route key={ elem.path } path={ elem.path } component={ elem.component } />
 					))}
 				</div>								
-				<NavLinkBar data={navList} />
+				<NavLinkBar unread={ this.props.chat.unread } data={ navList } />
 			</div>
 		)
 	};
 }
 
-const mapStateToProps = state => ({ user: state.user });
-export default connect(mapStateToProps)(Dashboard);
+const mapStateToProps = state => ({ chat: state.chat, user: state.user });
+export default connect(
+		mapStateToProps,
+		{ getMsgList, recvMsg }
+		)(Dashboard);
