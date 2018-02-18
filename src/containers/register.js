@@ -1,30 +1,20 @@
 import React from 'react';
 import Logo from '../components/logo/logo.js';
-import { List, InputItem, Radio, WhiteSpace, Button} from 'antd-mobile';
+import { List, InputItem, WhiteSpace, Button, SegmentedControl } from 'antd-mobile';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { register } from '../actions/user'
+import chatForm from '../components/chat-form';
 
+@chatForm
 class Register extends React.Component{
-	constructor(props) {
-		super(props);
-		this.state = {
-			username:'',
-			passwd:'',
-			confirmpasswd:'',
-			type: 'student'
-		};
-	}
-	handleChange = (key, val) => {
-		this.setState(() => ({
-			[key]: val
-		}));
-	}
 	handleRegister = () => {
-		this.props.register(this.state)
+		this.props.register(this.props.state);
 	}
+	onSegmentedControlChange = (e) => {
+    	this.props.handleChange('type', e.nativeEvent.value);	
+  	}
 	render() {
-		const RadioItem = Radio.RadioItem;
 		return (
 			<div>
 				{this.props.user.redirectTo ? <Redirect to={this.props.user.redirectTo} /> : null}
@@ -32,45 +22,40 @@ class Register extends React.Component{
 				{this.props.user.msg && <p className='error-msg'>{this.props.user.msg}</p>}
 				<List>
 					<InputItem 
-						onChange={val => this.handleChange('username', val)}>
+						onChange={val => this.props.handleChange('username', val)}>
 						username</InputItem>
 					<WhiteSpace />
 					<InputItem 
 						type="password"
-						onChange={val => this.handleChange('passwd', val)}>
+						onChange={val => this.props.handleChange('passwd', val)}>
 						password</InputItem>
 					<WhiteSpace />
 					<InputItem 
 						labelNumber={8}
 						type="password"
-						onChange={val => this.handleChange('confirmpasswd', val)}>
+						onChange={val => this.props.handleChange('confirmpasswd', val)}>
 						confirm password</InputItem>
 					<WhiteSpace />
-					<RadioItem 
-						checked={this.state.type==='student'}
-						onChange={() => this.handleChange('type', 'student')}
-					>
-						student
-					</RadioItem>
-					<RadioItem 
-						checked={this.state.type==='tutor'}
-						onChange={() => this.handleChange('type', 'tutor')}
-					>
-						tutor
-					</RadioItem>
-					<WhiteSpace />
+					
+       				<SegmentedControl 
+       					onChange={this.onSegmentedControlChange}
+       					selectedIndex={this.props.state.type==='tutor' ? 1 : 0} 
+       					values={['student', 'tutor']} 
+       				/>
+				</List>
+				<WhiteSpace />
 					<Button 
 						type="primary"
 						onClick={this.handleRegister} 
 					>
 						Register
 					</Button>
-				</List>
 			</div>
 		);
 	}
 }
 
-const mapStateToProps = state => ({user: state.user }); 
-
-export default connect(mapStateToProps, { register })(Register);
+export default connect(
+	state => ({user: state.user }), 
+	{ register }
+	)(Register);

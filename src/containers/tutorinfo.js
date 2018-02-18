@@ -10,6 +10,7 @@ class TutorInfo extends React.Component{
 	constructor(props){
 		super(props);
 		this.state = {
+			avatar: this.props.user.avatar ? this.props.user.avatar : '',
 			title:'',
 			desct:'',
 			company:'',
@@ -26,9 +27,10 @@ class TutorInfo extends React.Component{
 		const redirect = this.props.redirectTo;
 		return (
 			<div>
-				{redirect && redirect!==path ? <Redirect to={this.props.user.redirectTo} /> : null}
+				{this.props.location.state !== 'update' && redirect && redirect!==path ? <Redirect to={this.props.user.redirectTo} /> : null}
 				<NavBar mode="dark">User Profile</NavBar>
 				<AvatarSelector 
+					avatar={this.state.avatar}
 					selectAvatar={(imgname) => {
 						this.setState({	avatar:imgname });
 					}} 
@@ -37,11 +39,8 @@ class TutorInfo extends React.Component{
 					onChange={(val) => this.handleChange('title', val)}
 				> Title </InputItem>
 				<InputItem
-					onChange={(val) => this.handleChange('company', val)}
-				> Company </InputItem>
-				<InputItem
-					onChange={(val) => this.handleChange('money', val)}
-				> Salary </InputItem>
+					onChange={(val) => this.handleChange('subject', val)}
+				> Subject </InputItem>
 				<TextareaItem
 					onChange={(val) => this.handleChange('desc', val)}
 					rows={3}
@@ -51,6 +50,7 @@ class TutorInfo extends React.Component{
 				<Button 
 					onClick={() => {
 						this.props.profileUpdate(this.state);
+						this.props.history.push('/tutor')
 					}}
 					type='primary'
 				>save</Button>

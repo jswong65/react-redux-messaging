@@ -6,45 +6,7 @@ const User = models.getModel('user');
 const Chat = models.getModel('chat');
 const _filter = { 'passwd':0, '__v':0 };
 
-Router.get('/list', (req, res) => {
-	const { type } = req.query;
-	User.find({ type }, (err, doc) => {
-		return res.json({ code:0, data:doc });
-	});
-});
-// get msg list from a user (either sent or received)
-Router.get('/msglist', (req, res) => {
-	const userid = req.cookies.userid;
-	let users = {}
-	// retrieve user list
-	User.find({}, (err, userdoc) => {
-		userdoc.forEach( val => {
-			users[val._id] = { username:val.username, avatar:val.avatar };
-		});
-	});
-
-	Chat.find({'$or':[{ from:userid }, { to:userid }]}, (err, doc) => {
-		if (!err) {
-			return res.json({ code:0, msgs:doc, users });
-		}
-		return res.json({ code:1 });
-	});
-})
-Router.post('/readmsg', (req, res) => {
-	const userid = req.cookies.userid;
-	const { fromId } = req.body;
-	Chat.update(
-			{ from:fromId, to:userid }, 
-			{ '$set': { has_read:true } }, 
-			{ 'multi': true },
-			(err, doc) => {
-		if (!err) {
-			return res.json({ code:0, num:doc.nModified });
-		}
-		return res.json({ code:1 })
-	});
-});
-Router.post('/update', (req, res) => {
+Router.put('/update', (req, res) => {
 	const userid = req.cookies.userid;
 	if (!userid) {
 		return res.json({ code:1, msg:'update failed' })
@@ -79,9 +41,9 @@ Router.post('/register', (req, res) => {
 			if (err) {
 				return res.json({code:1, msg:'something wrong!'});
 			}
-			const {user, type, _id} = doc;
+			const {username, type, _id} = doc;
 			res.cookie('userid', _id);
-			return res.json({code:0, data:{user, type, _id}});
+			return res.json({code:0, data:{username, type, _id}});
 		});
 	})
 });

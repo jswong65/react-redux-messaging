@@ -1,9 +1,8 @@
 import { getRedirectPath } from '../utils';
-import { REGISTER_SUCCESS, LOGIN_SUCCESS, LOAD_DATA, ERROR_MSG } from '../actions/types';
+import { AUTH_SUCCESS, LOAD_DATA, ERROR_MSG, LOGOUT } from '../actions/types';
 
 const initState = {
 	redirectTo:'',
-	isAuth: false,
 	msg:'',
 	username:'',
 	type:''
@@ -11,14 +10,14 @@ const initState = {
 
 const userReducer = (state=initState, action) => {
 	switch(action.type){
-		case REGISTER_SUCCESS:
-			return {...state, msg: '', redirectTo:getRedirectPath(action.payload), isAuth: true, ...action.payload};
-		case LOGIN_SUCCESS:
-			return {...state, msg: '', redirectTo:getRedirectPath(action.payload), isAuth: true, ...action.payload}; 
+		case AUTH_SUCCESS:
+			return { ...state, msg: '', redirectTo:getRedirectPath(action.payload), ...action.payload }; 
 		case LOAD_DATA:
-			return {...state, ...action.payload}
+			return { ...state, ...action.payload };
+		case LOGOUT:
+			return { ...initState, redirectTo:'/login' };
 		case ERROR_MSG:
-			return {...state, isAuth: false, msg: action.msg}
+			return { ...state, isAuth: false, msg: action.msg };
 		default:
 			return state
 	}

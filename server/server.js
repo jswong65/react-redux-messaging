@@ -1,6 +1,12 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const userRouter = require('./user');
+const chatRouter = require('./chat');
+const models = require('./model');
+const Chat = models.getModel('chat');
+const path = require('path');
+
 // create an app
 const app = express();
 // work with express
@@ -17,13 +23,12 @@ io.on('connection', (socket) => {
 	})
 });
 
-const userRouter = require('./user');
-const models = require('./model');
-const Chat = models.getModel('chat');
-
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use('/user', userRouter);
+app.use('/chat', chatRouter);
+app.use('/', express.static(path.resolve('build')));
+
 server.listen(9093, () => {
 	console.log('Node app start at port 9093')
 });

@@ -1,9 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { getUserList } from '../actions/chat';
+import { getUserList } from '../actions/chat-user';
 import UserCard from '../components/usercard';
 
-class Tutor extends React.Component{
+class Student extends React.Component{
 	componentDidMount(){
 		this.props.getUserList('student');
 	}
@@ -14,9 +14,8 @@ class Tutor extends React.Component{
 	}
 }
 
-const mapStateToProps = state => ({	userList: state.chat.userList });
 
 export default connect(
-		mapStateToProps,
+		state => ({	userList: state.chatUser.userList }),
 		{ getUserList }
-	)(Tutor);
+	)(Student);

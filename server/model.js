@@ -3,12 +3,16 @@ const mongoose = require('mongoose');
 const DB_URL = 'mongodb://localhost:27017/react-chat';
 mongoose.connect(DB_URL);
 
+const Schema = mongoose.Schema;
 const models = {
 	user:{
 		'username': { type:String, require:true },
 		'passwd': { type:String, require:true },
 		'type': { type:String, require:true },
 		'avatar': { 'type':String },
+		'display': { 'type':String },
+		'title': { 'type':String },
+		'subject': { 'type':String },
 		'desc': { 'type':String },
 		'major': { 'type':String },
 		'year': { 'type':String }
@@ -24,11 +28,11 @@ const models = {
 };
 
 for (let m in models){
-	mongoose.model(m, new mongoose.Schema(models[m]));
+	mongoose.model(m, new Schema(models[m]));
 }
 
 module.exports = {
-	getModel: function(name){
+	getModel: (name) => {
 		return mongoose.model(name);
 	}
 }
