@@ -12,8 +12,6 @@ const MessageSchema = new Schema({
     'createdAt': { type: Number, default: Date.now } 
 });
 
-// Create the model class
-const Message = mongoose.model('message', MessageSchema);
 
 // Export the model
-module.exports = { Message };
+module.exports = mongoose.model('message', MessageSchema);
